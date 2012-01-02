@@ -13,8 +13,9 @@
  */
 
 class W2P_System_Utilities extends W2P_System{
+	private static $custom_paths = array();
 	
-		/**
+	/**
 	 * SPL Autoloader
 	 *
 	 * @public
@@ -26,30 +27,6 @@ class W2P_System_Utilities extends W2P_System{
 	public static function autoload($classname){
 		W2PSEN::debug('Autoload:'.$classname);
 		if(!class_exists($classname)){
-			// Dumb mapping..
-			$horrible =	 array(	'classGUI'		 => 'class/classGUI.php',
-								'dbClass'		 => 'class/dbClass.php',
-								'cPayment'		 => 'communication/cpayment.php',
-								'cSMS'			 => 'communication/csms.php',
-								'cDatabase'		 => 'database/cdatabase.php',
-								'cDatabaseTable' => 'database/cdatabase.php',
-								'dbComment'		 => 'dbObjects/dbComment.php',
-								'dbContent'		 => 'dbObjects/dbContent.php',
-								'dbFile'		 => 'dbObjects/dbFile.php',
-								'dbFolder'		 => 'dbObjects/dbFolder.php',
-								'dbImage'		 => 'dbObjects/dbImage.php',
-								'dbObject'		 => 'dbObjects/dbObject.php',
-								'dbUser'		 => 'dbObjects/dbUser.php',
-								'cDebug'		 => 'debug/cdebug.php',
-								'cPagination'	 => 'pagination/cpagination.php',
-								'Session'		 => 'session/session.php',
-							//	'Enviroment'	 => 'system/Enviroment.php',	
-								'cDocument'		 => 'template/cDocument.php',	
-								'cPTemplate'	 => 'template/cPTemplate.php',
-								'cTemplate'		 => 'template/ctemplate.php',
-								'cTime'			 => 'time/ctime.php',
-								'XmlParser'		 => 'xml/xmlparser.php'
-							);	
 					
 			if(substr($classname,0,5) == "W2P"){
 				// Split into folders
@@ -63,12 +40,51 @@ class W2P_System_Utilities extends W2P_System{
 				}
 				
 				W2PSEN::debug("Loaded class: ".$classname);
-			else{
+			}else if($keys = array_key_exists($classname,self::$custom_paths)){
+				$path = CORE_DIR.self::$custom_paths[$classname];
+				W2PSEN::debug("SPL: ".$path);
+				
+				if(file_exists($path)){
+					include_once($path);
+				}
+			}else{
 				// Oops. What to do?
 				W2PSEN::log("Could not reckognize class. Bad format or 3rd-party?",W2P_FATAL);
 			}
 		}
 	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
+	 
+	 public static function autoload_register($class, $path){
+	 	self::$custom_paths[$class] = $path;
+	 }
+	 
+	 /**
+	  * 
+	  *
+	  * @author Eirik Eikaas
+	  * @version [REPLACE]
+	  * @since [REPLACE]
+	  * @package [REPLACE]
+	  * @[VISIBILITY]
+	  * @param [TYPE] $[NAME] [DESC]
+	  * @return [TYPE]
+	  */
+	 
+	 public static function autoload_unregister($class, $path){
+	 	unset(self::$custom_paths[$class]);
+	 }
 }
 
 ?>

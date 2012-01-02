@@ -11,8 +11,8 @@
  * @param [TYPE] $[NAME] [DESC]
  * @return [TYPE]
  */
- 
-class W2P_DB extends W2P{
+
+class W2P_System_Enviroment extends W2P_System{
 	
 	/**
 	 * 
@@ -26,8 +26,8 @@ class W2P_DB extends W2P{
 	 * @return [TYPE]
 	 */
 	
-	public static function setup($user, $pswd, $db, $host){
-		
+	public static function getEnv(){
+	
 	}
 }
 
