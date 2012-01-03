@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Print! ##!##</title>
-		##!##
+		<title>Print! - {{ title }}</title>
+		{% for item in includes %}
+            {{ item }}
+        {% endfor %}
 	</head>
 	<body>

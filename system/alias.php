@@ -14,9 +14,11 @@ class_alias('W2P_System_Cleanup','W2PSC');
 class_alias('W2P_System_ErrorNotifier','W2PSEN');
 class_alias('W2P_System_Enviroment','W2PSE');
 class_alias('W2P_System_Hooks','W2PSH');
+class_alias('W2P_System_Internationalization','W2PSI18N');
 class_alias('W2P_System_Utilities','W2PSU');
 
 class_alias('W2P_System_Hooks','Hooks');
 class_alias('W2P_System_Enviroment','Env');
+class_alias('W2P_System_Internationalization','I18N');
 
 ?>
