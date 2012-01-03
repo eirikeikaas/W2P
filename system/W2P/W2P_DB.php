@@ -27,7 +27,9 @@ class W2P_DB extends W2P{
 	 */
 	
 	public static function setup($user, $pswd, $db, $host){
-		
+		ORM::configure('mysql:host='.$host.';dbname='.$db);
+		ORM::configure('username', $user);
+		ORM::configure('password', $pswd);
 	}
 }
 

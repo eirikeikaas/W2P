@@ -24,12 +24,9 @@ class W2P_System_ErrorNotifier extends W2P_System{
 	 */
 	
 	public static function debug($msg){
-		include_once(CORE_DIR.'lib/classes/Arena/Arena_System.php');
-		include_once(CORE_DIR.'lib/classes/Arena/System/Arena_System_Enviroment.php');
-		
-		if(Arena_System_Enviroment::getEnviroment() === ARENA_ENVIROMENT_DEVELOPMENT){
-			write($msg, ARENA_ERROR_DEBUG);
-		}
+		#if(W2P_System_Enviroment::getEnv() === ARENA_ENVIROMENT_DEVELOPMENT){
+		#	self::write($msg, ARENA_ERROR_DEBUG);
+		#}
 	}
 	
 	/**
@@ -55,7 +52,7 @@ class W2P_System_ErrorNotifier extends W2P_System{
 				break;
 			case E_WARNING:
 			case E_USER_WARNING:
-			case ARENA_ERROR_WARNING:
+			case W2P_WARNING:
 				self::write($msg, $stack['file'], $stack['line'], $stack['class'], $stack['function'], $level);
 				break;
 			case E_ERROR:
@@ -67,14 +64,14 @@ class W2P_System_ErrorNotifier extends W2P_System{
 					self::write("A severe error has occured, the site will be locked down immediately!", $stack['file'], $stack['line'], $stack['class'], $stack['function'],$level);
 					
 					// Collect additional stats
-					$data = array(	'load' => Arena_Utilities::serverload(),
+					$data = array(	'load' => W2P_System_Utilities::serverload(),
 									'mysql' => @mysql_stat()
 								);
 								
-					self::live($msg, $stack['file'], $stack['line'], $stack['class'], $stack['function'], W2P_FATAL, $data);
-					self::lock();
+					//self::live($msg, $stack['file'], $stack['line'], $stack['class'], $stack['function'], W2P_FATAL, $data);
+					//self::lock();
 				}else{
-					self::live($msg, $stack['file'], $stack['line'], $stack['class'], $stack['function'], W2P_FATAL);
+					//self::live($msg, $stack['file'], $stack['line'], $stack['class'], $stack['function'], W2P_FATAL);
 				}
 				break;
 			case E_DEPRECATED:
@@ -83,9 +80,9 @@ class W2P_System_ErrorNotifier extends W2P_System{
 			case W2P_DEPRECATION:
 				self::write($msg, $stack['file'], $stack['line'], $stack['class'], $stack['function'], $level);
 				
-				if(Arena_System_Enviroment::getEnviroment() === W2P_ENV_DEVELOPMENT){
+				if(W2P_System_Enviroment::getENv() === W2P_ENV_DEVELOPMENT){
 					self::write($msg, $stack['file'], $stack['line'], $stack['class'], $stack['function'], W2P_DEBUG);
-					self::live($msg, $stack['file'], $stack['line'], $stack['class'], $stack['function'], W2P_DEBUG, null, true);
+					//self::live($msg, $stack['file'], $stack['line'], $stack['class'], $stack['function'], W2P_DEBUG, null, true);
 				}
 				break;
 			default:
@@ -108,7 +105,7 @@ class W2P_System_ErrorNotifier extends W2P_System{
 		include_once(CORE_DIR.'lib/classes/Arena/Arena_System.php');
 		include_once(CORE_DIR.'lib/classes/Arena/System/Arena_System_Enviroment.php');
 		
-		if(Arena_System_Enviroment::getEnviroment() === W2P_ENV_DEVELOPMENT){
+		if(W2P_System_Enviroment::getEnv() === W2P_ENV_DEVELOPMENT){
 			self::notify($function."() will be removed by Arena CM v$gone and should therefore be avoided. It will be replaced by $replacement()", W2P_DEPRECATION, 2);
 		}
 	} 
@@ -156,15 +153,15 @@ class W2P_System_ErrorNotifier extends W2P_System{
 	 * @param $file string
 	 */
 	
-	private static function write($msg, $file, $line, $class, $function, $level, $logfile = LOG_PRIMARYFILE){
+	private static function write($msg, $file, $line, $class, $function, $level, $logfile = LOG_FILE){
 		$str = "[".date(LOG_DATEFORMAT)." / {$_SERVER['REMOTE_ADDR']}] $level: $msg ({$class}::{$function}() in $file:$line)\n";
 		
 		for($i=0;$i<LOG_MAXTRY;$i++){
 			if($f = fopen($logfile.".$i","a+")){
-				flock($f,LOCK_EX | LOCK_NB);
+					flock($f,LOCK_EX | LOCK_NB);
 					fwrite($f,$str);
+					flock($f,LOCK_UN);
 					fclose($f);
-				flock($f,LOCK_UN);
 				return;
 			}
 		}
