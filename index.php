@@ -2,7 +2,8 @@
 
 
 try{
-	// Get configuration and class aliases
+
+	// Get configuration
 	require_once('system/config.php');
 	
 	// Load Utilities for autoloader and ErrorNotifier for error handling
@@ -16,6 +17,7 @@ try{
 	spl_autoload_register("W2P_System_Utilities::autoload");
 	set_error_handler("W2P_System_ErrorNotifier::handler");
 	
+	// Get class-aliases
 	require_once('system/alias.php');
 	
 	// Register 3rd party classes to autoload
@@ -34,17 +36,24 @@ try{
 	// Get enviroment
 	$env = W2PSE::getEnv();
 	
+	// Start Slim
 	$app = new Slim();
 	
 	$app->get('/', function(){
 		echo "YE";
 	});
 	
+	$app->get('/hello/:name', function($name){
+		echo "YELLO, $name!";
+	});
+	
+	// Run SLim
 	$app->run();
 	
 	// Stop debug benchmarking
 	W2PSB::stop("main");
 	W2PSB::log("main");
+	
 }catch(Exception $e){
 	echo $e;
 }
