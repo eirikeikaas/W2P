@@ -46,8 +46,8 @@ try{
 		'view' => new TwigView
 	));
 	
-	$app->get('/', function(){
-		echo "YE";
+	$app->get('/', function() use($app){
+		$app->render(TEMPLATE_DIR."index.html");
 	});
 	
 	$app->get('/', function() use($app){

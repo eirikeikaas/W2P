@@ -1,6 +1,7 @@
 <?php
 
 define('CORE_DIR','/Users/eikaas/Sites/W2Pgit/');
+define('TEMPLATE_DIR',CORE_DIR.'system/templates/');
 define('LOG_DIR',CORE_DIR.'system/log/');
 define('LOG_FILE',LOG_DIR.'w2p.log');
 define('LOG_DATEFORMAT','dmY h:i:s');
