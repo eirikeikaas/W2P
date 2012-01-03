@@ -22,10 +22,12 @@ try{
 	
 	// Register 3rd party classes to autoload
 	W2PSU::autoload_register("Slim","system/3rd/Slim/Slim.php");
+	W2PSU::autoload_register("Slim_View","system/3rd/Slim/View.php");
 	W2PSU::autoload_register("Live","system/3rd/Live.php");
 	W2PSU::autoload_register("ORM","system/3rd/idiorm.php");
 	W2PSU::autoload_register("ORMWrapper","system/3rd/paris.php");
 	W2PSU::autoload_register("Model","system/3rd/paris.php");
+	W2PSU::autoload_register("TwigView","system/3rd/Slim/Views/TwigView.php");
 	
 	// Start debug benchmarking
 	W2P_System_Benchmark::start("main");
@@ -36,18 +38,23 @@ try{
 	// Get enviroment
 	$env = W2PSE::getEnv();
 	
+	// Set Twig directory 
+	TwigView::$twigDirectory = 'system/3rd/Twig/';
+	
 	// Start Slim
-	$app = new Slim();
+	$app = new Slim(array(
+		'view' => new TwigView
+	));
 	
 	$app->get('/', function(){
 		echo "YE";
 	});
 	
-	$app->get('/hello/:name', function($name){
+	$app->get('/', function() use($app){
 		echo "YELLO, $name!";
 	});
 	
-	// Run SLim
+	// Run Slim
 	$app->run();
 	
 	// Stop debug benchmarking
