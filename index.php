@@ -7,10 +7,7 @@ try{
 	require_once('system/config.php');
 	
 	// Load Utilities for autoloader and ErrorNotifier for error handling
-	require_once('system/W2P.php');
-	require_once('system/W2P/W2P_System.php');
 	require_once('system/W2P/System/W2P_System_Utilities.php');
-	require_once('system/W2P/System/W2P_System_Enviroment.php');
 	require_once('system/W2P/System/W2P_System_ErrorNotifier.php');
 	
 	// Set autoloaders and error handler
@@ -30,7 +27,7 @@ try{
 	W2PSU::autoload_register("TwigView","system/3rd/Slim/Views/TwigView.php");
 	
 	// Start debug benchmarking
-	W2P_System_Benchmark::start("main");
+	W2PSB::start("main");
 	
 	// Set up database
 	W2PDB::setup(W2P_MYSQL_USER, W2P_MYSQL_PSWD, W2P_MYSQL_DB, W2P_MYSQL_HOST);
@@ -43,11 +40,12 @@ try{
 	
 	// Start Slim
 	$app = new Slim(array(
-		'view' => new TwigView
+		'view' => new TwigView,
+		'templates.path' => TEMPLATE_DIR
 	));
 	
 	$app->get('/', function() use($app){
-		$app->render(TEMPLATE_DIR."index.html");
+		$app->render("index.html");
 	});
 	
 	$app->get('/', function() use($app){

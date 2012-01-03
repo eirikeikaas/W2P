@@ -1,5 +1,10 @@
 <?php
 
+// DO NOT REMOVE!
+// THIS FILE IS NEEDED BEFORE AUTOLOADER IS READY
+require_once('system/W2P/W2P_System.php');
+require_once('system/W2P/System/W2P_System_Enviroment.php');
+
 /**
  * 
  *
