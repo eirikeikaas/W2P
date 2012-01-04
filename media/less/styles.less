@@ -9,7 +9,7 @@
 @headingcolor:	#464646;
 @bodycolor:		#848484;
 
-@mainwidth:		400px;
+@mainwidth:		500px;
 @sidewidth:		260px;
 
 @largesize:		15px;
@@ -49,9 +49,22 @@ body, html{
 
 @import "shared";
 
+body{
+	padding: 8% 0 0 0;
+}
+
 #container{
 	background-color: #FFF;
-	margin: 10% auto 0 auto;
-	min-height: 150px;
+	.box-shadow(0 3px 11px rgba(0,0,0,0.4);
+	min-height: 500px;
 	.center;
+}
+#header{
+	background: url('../img/purple.png');
+	color: #FFF;
+	height: 40px;
+	padding: 3%;
+}
+#content{
+	padding: 3%;
 }

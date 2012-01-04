@@ -160,7 +160,7 @@ textarea {
 }
 .center {
   margin: 0 auto;
-  width: 400px;
+  width: 500px;
 }
 .block {
   display: block;
@@ -183,11 +183,26 @@ body, html {
 }
 body {
   background: url('../img/bg.png');
+  font-family: Helvetica, Arial, sans-serif;
+}
+body {
+  padding: 8% 0 0 0;
 }
 #container {
   background-color: #FFF;
-  margin: 10% auto 0 auto;
-  min-height: 150px;
+  box-shadow: 0 3px 11px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0 3px 11px rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: 0 3px 11px rgba(0, 0, 0, 0.4);
+  min-height: 500px;
   margin: 0 auto;
-  width: 400px;
+  width: 500px;
+}
+#header {
+  background: url('../img/purple.png');
+  color: #FFF;
+  height: 40px;
+  padding: 3%;
+}
+#content {
+  padding: 3%;
 }
