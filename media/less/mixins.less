@@ -1,0 +1,22 @@
+// MIXINS
+
+.box-shadow () {
+  box-shadow: @arguments;
+  -moz-box-shadow: @arguments;
+  -webkit-box-shadow: @arguments;
+}
+.border-radius (@radius: 5px) {
+  border-radius: @radius;
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+}
+.gradient (@c1c: #000, @c1p: 0%, @c2c: #FFF, @c2p: 0%, @fbc: #000){
+	background: @fbc; // Old browsers
+	background: -moz-linear-gradient(top, @c1c @c1p, @c2c @c2p); // FF3.6+
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(@c1p,@c1c), color-stop(@c2p,@c2c)); // Chrome,Safari4+ 
+	background: -webkit-linear-gradient(top, @c1c @c1p,@c2c @c2p); // Chrome10+,Safari5.1+
+	background: -o-linear-gradient(top, @c1c @c1p,@c2c @c2p); // Opera 11.10+
+	background: -ms-linear-gradient(top, @c1c @c1p,@c2c @c2p); // IE10+
+	background: linear-gradient(top, @c1c @c1p,@c2c @c2p); // W3C
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='@c1c', endColorstr='@c2c',GradientType=0 ); // IE6-9
+}

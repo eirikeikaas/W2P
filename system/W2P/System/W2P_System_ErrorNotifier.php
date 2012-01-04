@@ -150,6 +150,61 @@ class W2P_System_ErrorNotifier extends W2P_System{
 	}
 	
 	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
+	 
+	public static function formatException(Exception $e){
+		header("HTTP/1.0 500 Server Error");
+		echo <<<EOT
+			<html>
+				<head>
+					<title>Server Error</title>
+					<style type="text/css">
+						body{
+							margin: 50px;
+							font-family: Helvetica, Arial, sans-serif;
+						}
+						h1{
+							font-size: 48px;
+						}
+						p{
+							font-size: 13px;
+							width: 300px;
+							line-height: 17px;
+						}
+						span{
+							font-weight: bold;
+							width: 45px;
+							float: left;
+						}
+					</style>
+				</head>
+				<body>
+					<div>
+						<h1>Server Error</h1>
+						<p>
+							{$e->getMessage()}
+						</p>
+						<p>
+							<span>Code: </span>{$e->getCode()}<br />
+							<span>File: </span>{$e->getFile()} ({$e->getLine()})
+						</p>
+						<pre>{$e->getTraceAsString()}</pre>
+					</div>
+				</body>
+			</html>
+EOT;
+	}
+	
+	/**
 	 * ErrorHandler for PHP itself
 	 *
 	 * @public

@@ -5,9 +5,8 @@ try{
 	
 	// Get configuration and constants
 	require_once('system/constants.php');
-	if(!file_exists('config.php')){
+	if(!file_exists('config.php'))
 		throw new Exception("Missing configuration file");
-	}
 	require_once('config.php');
 	
 	// Load Utilities for autoloader and ErrorNotifier for error handling
@@ -45,16 +44,20 @@ try{
 	
 	// Make sure that CSS is the latest LESS
 	lessc::ccompile(MEDIA_DIR.'less/admin.less', MEDIA_DIR.'css/admin.css');
+	lessc::ccompile(MEDIA_DIR.'less/preview.less', MEDIA_DIR.'css/preview.css');
 	lessc::ccompile(MEDIA_DIR.'less/styles.less', MEDIA_DIR.'css/styles.css');
 	
+	// Start Slim wrapper
 	$route = new W2PR(array(
 		'view' => new TwigView,
 		'templates.path' => TEMPLATE_DIR,
 		'mode' => $env
 	));
 	
+	// Get app
 	$app = $route->app();
 	
+	// Set routing
 	$app->get('/', function() use($app){
 		return $app->render("index.html", array(
 			'includes' => array(
@@ -73,7 +76,8 @@ try{
 }catch(Exception $e){
 
 	// Exception handling
-	echo $e;
+	require_once('system/W2P/System/W2P_System_ErrorNotifier.php');
+	W2P_System_ErrorNotifier::formatException($e);
 
 }
 
