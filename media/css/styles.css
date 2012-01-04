@@ -195,8 +195,26 @@ body {
   background: url('../img/bg.png');
   font-family: Helvetica, Arial, sans-serif;
 }
+input {
+  border: 1px solid #CCC;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+}
+input.hasLabel {
+  padding: 6px;
+  width: 65%;
+  float: right;
+}
+label {
+  padding: 6px;
+  width: 25%;
+  text-align: right;
+  float: left;
+}
 body {
   padding: 8% 0 0 0;
+  height: 92%;
 }
 #container {
   background-color: #FFF;
