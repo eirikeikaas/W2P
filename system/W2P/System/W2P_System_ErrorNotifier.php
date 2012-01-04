@@ -177,7 +177,7 @@ class W2P_System_ErrorNotifier extends W2P_System{
 						}
 						p{
 							font-size: 13px;
-							width: 300px;
+							width: 600px;
 							line-height: 17px;
 						}
 						span{

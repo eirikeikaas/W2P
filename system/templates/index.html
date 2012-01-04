@@ -1,6 +1,6 @@
 {% include 'header.html' %}
 	<div id="container">
-		<div id="header">Test</div>
+		<div id="header">Web to Print</div>
 		{% if users|length > 0 %}
 			<ul id="steps">
 			{% for user in users %}
@@ -11,8 +11,15 @@
 		<div class="content">
 			Hello
 			<hr />
-			<label>Test</label>
-			<input type="text" class="hasLabel" placeholder="Test">
+			<div class="line">
+				<label>Brukernavn</label>
+				<input type="text" class="hasLabel" placeholder="ola@eksempel.no">
+			</div>
+			<div class="line">
+				<label>Passord</label>
+				<input type="text" class="hasLabel" placeholder="Passord">
+			</div>
+			<button>Logg inn</button>
 			{% block content %}{% endblock %}
 		</div>
 	</div>
