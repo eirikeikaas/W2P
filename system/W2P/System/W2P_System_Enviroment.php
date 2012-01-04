@@ -27,7 +27,7 @@ class W2P_System_Enviroment extends W2P_System{
 	 */
 	
 	public static function getEnv(){
-	
+		
 	}
 }
 

@@ -132,6 +132,24 @@ class W2P_System_ErrorNotifier extends W2P_System{
 	}
 	
 	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
+	 
+	public static function throwException($msg, $code = 500){
+		if(W2P_EXCEPTIONS){
+			throw new Exception($msg, $code);
+		}
+	}
+	
+	/**
 	 * ErrorHandler for PHP itself
 	 *
 	 * @public

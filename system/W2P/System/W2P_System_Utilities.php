@@ -53,8 +53,29 @@ class W2P_System_Utilities extends W2P_System{
 				}
 			}else{
 				// Oops. What to do?
-				W2P_System_ErrorNotifier::notify("Could not reckognize class. Bad format or 3rd-party?",W2P_FATAL);
+				W2P_System_ErrorNotifier::notify("Could not reckognize class $classname.",W2P_FATAL);
 			}
+		}
+	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
+	 
+	public function getModel($model){
+		if(file_exists(MODEL_DIR.$model.".php")){
+			require_once(MODEL_DIR.$model.".php");
+			return true;
+		}else{
+			return false;
 		}
 	}
 	

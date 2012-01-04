@@ -10,3 +10,8 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ index.php [QSA,L]
 
 Options -Indexes
+
+<Files ~ "^(\.htaccess|config\.php)">
+	Order allow,deny
+	Deny from all
+</Files>

@@ -2,9 +2,13 @@
 
 
 try{
-
-	// Get configuration
-	require_once('system/config.php');
+	
+	// Get configuration and constants
+	require_once('system/constants.php');
+	if(!file_exists('config.php')){
+		throw new Exception("Missing configuration file");
+	}
+	require_once('config.php');
 	
 	// Load Utilities for autoloader and ErrorNotifier for error handling
 	require_once('system/W2P/System/W2P_System_Utilities.php');
@@ -21,10 +25,11 @@ try{
 	W2PSU::autoload_register("Slim","system/3rd/Slim/Slim.php");
 	W2PSU::autoload_register("Slim_View","system/3rd/Slim/View.php");
 	W2PSU::autoload_register("Live","system/3rd/Live.php");
-	W2PSU::autoload_register("ORM","system/3rd/idiorm.php");
-	W2PSU::autoload_register("ORMWrapper","system/3rd/paris.php");
-	W2PSU::autoload_register("Model","system/3rd/paris.php");
+	W2PSU::autoload_register("ORM","system/3rd/Idiorm.php");
+	W2PSU::autoload_register("ORMWrapper","system/3rd/Paris.php");
+	W2PSU::autoload_register("Model","system/3rd/Paris.php");
 	W2PSU::autoload_register("TwigView","system/3rd/Slim/Views/TwigView.php");
+	W2PSU::autoload_register("lessc","system/3rd/Lessc.php");
 	
 	// Start debug benchmarking
 	W2PSB::start("main");
@@ -38,18 +43,37 @@ try{
 	// Set Twig directory 
 	TwigView::$twigDirectory = 'system/3rd/Twig/';
 	
+	// Make sure that CSS is the latest LESS
+	lessc::ccompile(MEDIA_DIR.'less/admin.less', MEDIA_DIR.'css/admin.css');
+	lessc::ccompile(MEDIA_DIR.'less/styles.less', MEDIA_DIR.'css/styles.css');
+	
 	// Start Slim
 	$app = new Slim(array(
 		'view' => new TwigView,
-		'templates.path' => TEMPLATE_DIR
+		'templates.path' => TEMPLATE_DIR,
+		'mode' => $env
 	));
 	
-	$app->get('/', function() use($app){
-		$app->render("index.html");
+	// Configure production mode
+	$app->configureMode(W2P_ENV_PRODUCTION, function () use ($app) {
+    	$app->config(array(
+			'log.enable' => true,
+			'log.path' => LOG_DIR,
+			'debug' => false
+ 	   ));
+	});
+
+	// Configure development mode
+	$app->configureMode(W2P_ENV_DEVELOPMENT, function () use ($app) {
+ 	   $app->config(array(
+			'log.enable' => false,
+			'debug' => true
+	    ));
 	});
 	
+	// Set up routes
 	$app->get('/', function() use($app){
-		echo "YELLO, $name!";
+		return $app->render("index.html");
 	});
 	
 	// Run Slim
@@ -60,7 +84,10 @@ try{
 	W2PSB::log("main");
 	
 }catch(Exception $e){
+
+	// Exception handling
 	echo $e;
+
 }
 
 ?>
