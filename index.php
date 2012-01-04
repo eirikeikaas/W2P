@@ -61,6 +61,7 @@ try{
 	$app->get('/', function() use($app){
 		return $app->render("index.html", array(
 			'includes' => array(
+				'<link href="http://fonts.googleapis.com/css?family=Marvel:700" rel="stylesheet" type="text/css">',
 				'<link rel="stylesheet" href="media/css/styles.css" />'
 			)
 		));

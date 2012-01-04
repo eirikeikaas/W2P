@@ -12,9 +12,9 @@
 @mainwidth:		500px;
 @sidewidth:		260px;
 
-@largesize:		15px;
-@mediumsize:	14px;
-@normalsize:	13px;
+@largesize:		24px;
+@mediumsize:	18px;
+@normalsize:	14px;
 @smallsize:		11px;
 
 // MIXINS
@@ -23,26 +23,25 @@
 
 // CLASSES
 
-.center{
-	margin: 0 auto;
-	width: @mainwidth;
+@import "classes";
+
+.content{
+	color: #555;
+	font-size: @normalsize;
+	padding: 4%;
 }
-
-.block	{	display: block;	 }
-
-.inline	{	display: inline; }
-
-.left	{	float: left;     }
-
-.right	{	float: right;    }
-
-.clear	{	clear: both;     }
 
 // TAGS
 
 body, html{
 	height: 100%;
 	width: 100%;
+}
+
+hr{
+	border: none;
+	border-top: 1px solid #DDD;
+	margin: 4% 0;
 }
 
 // DIVS
@@ -61,10 +60,14 @@ body{
 }
 #header{
 	background: url('../img/purple.png');
+	border-bottom: 1px solid #8968bf;
+	.box-shadow(inset 0 -1px 0 rgba(255,255,255,0.2);
 	color: #FFF;
-	height: 40px;
-	padding: 3%;
-}
-#content{
-	padding: 3%;
+	font-family: "Marvel", Helvetica, Arial, sans-serif;
+	font-size: @largesize;
+	height: @largesize;
+	line-height: @largesize;
+	padding: 4%;
+	text-shadow: 0 2px 0 rgba(0,0,0,0.15);
+	text-transform: uppercase;
 }
