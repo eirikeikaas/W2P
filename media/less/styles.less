@@ -9,7 +9,7 @@
 @headingcolor:	#464646;
 @bodycolor:		#848484;
 
-@mainwidth:		700px;
+@mainwidth:		400px;
 @sidewidth:		260px;
 
 @largesize:		15px;
@@ -25,7 +25,7 @@
 
 .center{
 	margin: 0 auto;
-	width: @mainwidth + @sidewidth;
+	width: @mainwidth;
 }
 
 .block	{	display: block;	 }
@@ -48,3 +48,10 @@ body, html{
 // DIVS
 
 @import "shared";
+
+#container{
+	background-color: #FFF;
+	margin: 10% auto 0 auto;
+	min-height: 150px;
+	.center;
+}

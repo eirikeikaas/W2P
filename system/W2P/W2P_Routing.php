@@ -15,9 +15,23 @@
 class W2P_Routing extends W2P{
 	private $app = false;
 	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
+	
 	public function __construct($args){
 		// Start Slim
 		$this->app = new Slim($args);
+		
+		$this->app->error('W2P_System_ErrorNotifier::formatException');
 	
 		// Configure production mode
 		$this->app->configureMode(W2P_ENV_PRODUCTION, function () {
@@ -37,14 +51,50 @@ class W2P_Routing extends W2P{
 		});
 	}
 	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
+	
 	public function &app(){
 		return $this->app;
 	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
 	
 	public function get($path){
 		// Set up routes
 		
 	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
 	
 	public function run(){
 		// Run Slim

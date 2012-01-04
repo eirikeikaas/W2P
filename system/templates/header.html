@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Print! - {{ title }}</title>
+		<title>Print! - {% block title %}{% endblock %}</title>
 		{% autoescape false %}
 			{% for item in includes %}
 				{{ item }}

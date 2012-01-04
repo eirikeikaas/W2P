@@ -160,7 +160,7 @@ textarea {
 }
 .center {
   margin: 0 auto;
-  width: 960px;
+  width: 400px;
 }
 .block {
   display: block;
@@ -183,4 +183,11 @@ body, html {
 }
 body {
   background: url('../img/bg.png');
+}
+#container {
+  background-color: #FFF;
+  margin: 10% auto 0 auto;
+  min-height: 150px;
+  margin: 0 auto;
+  width: 400px;
 }

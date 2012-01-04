@@ -1,3 +1,15 @@
 {% include 'header.html' %}
-	<div>OK</div>
+	<div id="container">
+		<div id="header"></div>
+		{% if users|length > 0 %}
+			<ul id="steps">
+			{% for user in users %}
+				<li>{{ user.username|e }}</li>
+			{% endfor %}
+			</ul>
+		{% endif %}
+		<div id="content">
+			{% block content %}{% endblock %}
+		</div>
+	</div>
 {% include 'footer.html' %}
