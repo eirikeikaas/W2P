@@ -47,37 +47,24 @@ try{
 	lessc::ccompile(MEDIA_DIR.'less/admin.less', MEDIA_DIR.'css/admin.css');
 	lessc::ccompile(MEDIA_DIR.'less/styles.less', MEDIA_DIR.'css/styles.css');
 	
-	// Start Slim
-	$app = new Slim(array(
+	$route = new W2PR(array(
 		'view' => new TwigView,
 		'templates.path' => TEMPLATE_DIR,
 		'mode' => $env
 	));
 	
-	// Configure production mode
-	$app->configureMode(W2P_ENV_PRODUCTION, function () use ($app) {
-    	$app->config(array(
-			'log.enable' => true,
-			'log.path' => LOG_DIR,
-			'debug' => false
- 	   ));
-	});
-
-	// Configure development mode
-	$app->configureMode(W2P_ENV_DEVELOPMENT, function () use ($app) {
- 	   $app->config(array(
-			'log.enable' => false,
-			'debug' => true
-	    ));
-	});
+	$app = $route->app();
 	
-	// Set up routes
 	$app->get('/', function() use($app){
-		return $app->render("index.html");
+		return $app->render("index.html", array(
+			'includes' => array(
+				'<link rel="stylesheet" href="media/css/styles.css" />'
+			)
+		));
 	});
 	
-	// Run Slim
-	$app->run();
+	// Run routing
+	$route->run();
 	
 	// Stop debug benchmarking
 	W2PSB::stop("main");

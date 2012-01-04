@@ -2,8 +2,10 @@
 <html>
 	<head>
 		<title>Print! - {{ title }}</title>
-		{% for item in includes %}
-            {{ item }}
-        {% endfor %}
+		{% autoescape false %}
+			{% for item in includes %}
+				{{ item }}
+       		{% endfor %}
+        {% endautoescape %}
 	</head>
 	<body>
