@@ -1,20 +1,56 @@
 <?php
 
+/**
+ * 
+ *
+ * @author Eirik Eikaas
+ * @version [REPLACE]
+ * @since [REPLACE]
+ * @package [REPLACE]
+ * @[VISIBILITY]
+ * @param [TYPE] $[NAME] [DESC]
+ * @return [TYPE]
+ */
+
 class W2P_Auth extends W2P{
 	private $conn = false;
-	private static $salt = 's5uygd/&%$#fjh3SDHGF3&##sdrgf&%eygASHJG""#$&%RS';
+	private static $salt = 'dsfg464$YT$&"#F#SAFG$&/H3tyf3$#"FSf#"%FHASG3$&%"$fytd3Y4$"&#/(';
 	private $ua = "";
 	private static $loggedIn = false;
 	private static $admin = false;
 	private static $user = false;
 	private static $loginhash = "";
 	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
+	
 	public function __construct(){
-		$this->conn = &DB::getInstance();
+		//$this->conn = &DB::getInstance();
 		@session_start();
 		$this->ua = md5($_SERVER['HTTP_USER_AGENT']);
 
 	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
 	
 	public function login($brid, $pswd){
 		$c_brid = $this->conn->escape_string($brid);
@@ -23,6 +59,7 @@ class W2P_Auth extends W2P{
 		// Check that brid is email
 		if(preg_match('/^([_a-z0-9-.])+@([a-z0-9-]+.)+[a-z]{2,4}$/i',$c_brid) === 1){
 			$q = $this->conn->query("SELECT * FROM tr_users WHERE email = '{$c_brid}' AND password = '{$c_pswd}' LIMIT 1");
+			$q = Model::factory("Users")->where_equal("email", $c_brid)->where_equal("password", $c_pswd)->find_one();
 			
 			// Check that query didn't fail
 			if($q !== false){
@@ -41,13 +78,24 @@ class W2P_Auth extends W2P{
 					header("Location: ?e=login");
 				}
 			}else{
-				echo "WHOOPS";
-				echo $this->conn->error;
+				throw new Exception($this->conn->error);
 			}
 		}else{
 			header("Location: ?e=login");
 		}
 	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
 	
 	public function logout(){
 		setcookie('auth','');
@@ -58,12 +106,24 @@ class W2P_Auth extends W2P{
 		header("Location: ".$_SERVER['PHP_SELF']);
 	}
 	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
+	
 	public function isLoggedIn(){
-		if(self::$loggedIn===false)	{
-			$remote = $_COOKIE['auth'];	
-			$c_email = $this->conn->escape_string(urldecode($_COOKIE['user']));
+		if(self::$loggedIn===false){
+			if(isset($_COOKIE['auth']) && strlen($remote) === 64){
+				$remote = $_COOKIE['auth'];	
+				$c_email = $this->conn->escape_string(urldecode($_COOKIE['user']));
 			
-			if(strlen($remote) === 64){
 				self::$loginhash = $loginhash = hash('sha256',$_SESSION[$remote].$this->ua);
 				$q = $this->conn->query("SELECT *, CONCAT(firstname, ' ', lastname) AS name FROM tr_users WHERE loginhash = '{$loginhash}' AND email = '{$c_email}' LIMIT 1");
 				
@@ -75,13 +135,27 @@ class W2P_Auth extends W2P{
 						return true;
 					}
 				}else{
-					return "ERRRRRR";
+					throw new Exception("Could not authenticate due to an SQL error");
 				}
+			}else{
+				return false;
 			}
 		}else{
 			return true;
 		}
 	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
 	
 	public function isAdmin($id = false){
 		if(self::$admin===false && !$id){
@@ -101,7 +175,7 @@ class W2P_Auth extends W2P{
 						return false;
 					}
 				}else{
-					return false;
+					throw new Exception("Could not authenticate due to an SQL error");
 				}
 			}
 		}else if($id !== false){
@@ -115,12 +189,42 @@ class W2P_Auth extends W2P{
 					return false;
 				}
 			}else{
-				return false;
+				throw new Exception("Could not authenticate due to an SQL error");
 			}
 		}else{
 			return true;
 		}
 	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
+	
+	public function hasClearance($level){
+		if($this->isLoggedIn()){
+			return true;
+		}
+	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
 	
 	public static function userData($id = false){
 		if($id !== false){
@@ -133,9 +237,33 @@ class W2P_Auth extends W2P{
 		}
 	}
 	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
+	
 	public static function password($pass){
 		return hash("sha256",hash("sha256",$pass.self::$salt));
 	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
 	
 	public function updatePassword($id, $old, $new, $cnf){
 		$c_pswd = self::password($old);
@@ -147,6 +275,18 @@ class W2P_Auth extends W2P{
 			return false;
 		}
 	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
 	
 	public static function key($check=false){
 		if($check === false){
@@ -169,6 +309,18 @@ class W2P_Auth extends W2P{
 			}
 		}
 	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
 	
 	public function ifAdmin($condition, $negative = false){
 		if($negative){

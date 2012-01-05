@@ -1,6 +1,6 @@
 {% include 'header.html' %}
 	<div id="container">
-		<div id="header">Web to Print</div>
+		<div id="header">{{ title }}</div>
 		{% if users|length > 0 %}
 			<ul id="steps">
 			{% for user in users %}
@@ -19,7 +19,7 @@
 				<label>Passord</label>
 				<input type="text" class="hasLabel" placeholder="Passord">
 			</div>
-			<button>Logg inn</button>
+			<button class="purple">Logg inn</button>
 			{% block content %}{% endblock %}
 		</div>
 	</div>

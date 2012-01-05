@@ -55,16 +55,37 @@ try{
 	));
 	
 	// Get app
-	$app = $route->app();
+	$app = &$route->app();
+	
+	// Set routing parameters
+	W2PR::set("includes", array(
+		'<link href="http://fonts.googleapis.com/css?family=Marvel:700" rel="stylesheet" type="text/css">',
+		'<link rel="stylesheet" href="media/css/styles.css" />'
+	));
+		
+	// Start Auth
+	$auth = new W2PA();
 	
 	// Set routing
-	$app->get('/', function() use($app){
-		return $app->render("index.html", array(
-			'includes' => array(
-				'<link href="http://fonts.googleapis.com/css?family=Marvel:700" rel="stylesheet" type="text/css">',
-				'<link rel="stylesheet" href="media/css/styles.css" />'
-			)
-		));
+	$app->get('/', function() use($app, $route, $auth){
+		if($auth->hasClearance(1)){
+			return $route->render("index.html");
+		}else{
+			return $route->render("login.html");
+		}
+	});
+	
+	$app->get('/login', function() use($app, $route, $auth){
+		// Hvis bruker er logget inn
+		if($auth->hasClearance(1)){
+			return $route->render("index.html");
+		}else{
+			if($auth->login($app->request()->post('email'),$app->request()->post('password'))){
+				return $route->render("index.html");
+			}else{
+				return $route->render("login.html",array("error" => "Feil brukernavn eller passord"));
+			}
+		}
 	});
 	
 	// Run routing
