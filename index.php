@@ -71,7 +71,7 @@ try{
 		if($auth->hasClearance(1)){
 			return $route->render("index.html");
 		}else{
-			return $route->render("login.html");
+			$app->redirect('/login');
 		}
 	});
 	
@@ -81,9 +81,10 @@ try{
 			return $route->render("index.html");
 		}else{
 			if($auth->login($app->request()->post('email'),$app->request()->post('password'))){
-				return $route->render("index.html");
+				$app->redirect('/');
 			}else{
-				return $route->render("login.html",array("error" => "Feil brukernavn eller passord"));
+				$app->flash("error","Feil brukernavn eller passord");
+				$app->redirect('/login');
 			}
 		}
 	});

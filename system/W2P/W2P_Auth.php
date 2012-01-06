@@ -53,13 +53,12 @@ class W2P_Auth extends W2P{
 	 */
 	
 	public function login($brid, $pswd){
-		$c_brid = $this->conn->escape_string($brid);
-		$c_pswd = self::password($pswd);
+		$pswd = self::password($pswd);
 				
 		// Check that brid is email
-		if(preg_match('/^([_a-z0-9-.])+@([a-z0-9-]+.)+[a-z]{2,4}$/i',$c_brid) === 1){
-			$q = $this->conn->query("SELECT * FROM tr_users WHERE email = '{$c_brid}' AND password = '{$c_pswd}' LIMIT 1");
-			$q = Model::factory("Users")->where_equal("email", $c_brid)->where_equal("password", $c_pswd)->find_one();
+		if(preg_match('/^([_a-z0-9-.])+@([a-z0-9-]+.)+[a-z]{2,4}$/i',$brid) === 1){
+			$q = $this->conn->query("SELECT * FROM tr_users WHERE email = '{$brid}' AND password = '{$pswd}' LIMIT 1");
+			$q = Model::factory("Users")->where_equal("email", $brid)->where_equal("password", $pswd)->find_one();
 			
 			// Check that query didn't fail
 			if($q !== false){
@@ -73,15 +72,15 @@ class W2P_Auth extends W2P{
 					$_SESSION[$hash] = $remote;
 					$remote = hash('sha256',$remote.$this->ua);
 					$this->conn->query("UPDATE tr_users SET loginhash = '{$remote}' WHERE id = {$r['id']}");
-					header("Location: ".$_SERVER['PHP_SELF']);
+					return true;
 				}else{
-					header("Location: ?e=login");
+					return false;
 				}
 			}else{
 				throw new Exception($this->conn->error);
 			}
 		}else{
-			header("Location: ?e=login");
+			return false;
 		}
 	}
 	
