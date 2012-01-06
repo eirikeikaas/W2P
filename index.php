@@ -66,26 +66,57 @@ try{
 	// Start Auth
 	$auth = new W2PA();
 	
-	// Set routing
+	// INDEX
 	$app->get('/', function() use($app, $route, $auth){
 		if($auth->hasClearance(1)){
 			return $route->render("index.html");
 		}else{
-			$app->redirect('/login');
+			$app->redirect(W2P_PREFIX.'/login');
 		}
 	});
 	
+	// ADMIN
+	$app->get('/', function() use($app, $route, $auth){
+		if($auth->hasClearance(3)){
+			return $route->render("admin.html");
+		}else{
+			$app->redirect(W2P_PREFIX.'/login');
+		}
+	});
+	
+	// LOGIN
 	$app->get('/login', function() use($app, $route, $auth){
-		// Hvis bruker er logget inn
+	
+		// Check if the user already is signed in
 		if($auth->hasClearance(1)){
 			return $route->render("index.html");
 		}else{
-			if($auth->login($app->request()->post('email'),$app->request()->post('password'))){
-				$app->redirect('/');
+			$brid = $app->request()->post('email');
+			$pswd = $app->request()->post('password');
+			
+			// Check if we have formdata to check
+			if(isset($brid,$pswd)){
+			
+				// Login and redirect
+				if($auth->login($brid, $pswd)){
+					$app->redirect(W2P_PREFIX.'/');
+				}else{
+					// Render the login form with an error
+					return $route->render("login.html", array("error" => "Feil brukernavn eller passord"));
+				}
 			}else{
-				$app->flash("error","Feil brukernavn eller passord");
-				$app->redirect('/login');
+				// Render loginform
+				return $route->render("login.html");
 			}
+		}
+	});
+	
+	// LOGOUT
+	$app->get('/logout', function() use($app, $route, $auth){
+		if($auth->logout()){
+			$app->redirect(W2P_PREFIX.'/');
+		}else{
+			throw new Exception("Something really weird just happened…");
 		}
 	});
 	

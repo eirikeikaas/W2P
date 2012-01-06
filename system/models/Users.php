@@ -13,6 +13,9 @@ class Users extends Model{
     public static function user($orm) {
         return $orm->where_gte('level', 1);
     }
+    public static function clearance($orm, $level) {
+        return $orm->where_gte('level', $level);
+    }
 }
 
 ?>

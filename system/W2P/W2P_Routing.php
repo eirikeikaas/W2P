@@ -98,8 +98,18 @@ class W2P_Routing extends W2P{
 	 * @return [TYPE]
 	 */
 	 
-	public static function set($name, $value){
-		self::$arguments[$name] = $value;
+	public static function set($name, $value, $add = false){
+		if($add){
+			if(isset(self::$arguments[$name]) && is_array(self::$arguments[$name])){
+				array_push(self::$arguments[$name]);
+			}else if(isset(self::$arguments[$name])){
+				self::$arguments[$name] = array(self::$arguments[$name], $value);
+			}else{
+				self::$arguments[$name] = array($value);
+			}
+		}else{
+			self::$arguments[$name] = $value;
+		}
 	}
 	
 	/**

@@ -10,6 +10,8 @@ define('LOG_FILE',LOG_DIR.'w2p.log');
 define('LOG_DATEFORMAT','dmY h:i:s');
 define('LOG_MAXTRY',5);
 
+define('W2P_PREFIX','');
+
 define('W2P_ENVIROMENT', W2P_ENV_DEVELOPMENT);
 define('W2P_EXCEPTIONS', true);
 
