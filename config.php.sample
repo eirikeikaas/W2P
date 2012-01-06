@@ -1,27 +1,34 @@
 <?php
 
+// DIRECTORIES
 define('CORE_DIR','/usr/w2p/');
 define('TEMPLATE_DIR',CORE_DIR.'system/templates/');
 define('MEDIA_DIR',CORE_DIR.'media/');
 define('MODELS_DIR',CORE_DIR.'system/models/');
 define('LOG_DIR',CORE_DIR.'system/log/');
 
+// LOGGING
 define('LOG_FILE',LOG_DIR.'w2p.log');
 define('LOG_DATEFORMAT','dmY h:i:s');
 define('LOG_MAXTRY',5);
 
+// AUTHENTICATION AND ROUTING
 define('W2P_PREFIX','');
+define('W2P_BASE_SALT','');		// DO NOT LEAVE EMPTY!
+define('W2P_COOKIE_SALT','');	// DO NOT LEAVE EMPTY!
 
+// ENVIROMENT
 define('W2P_ENVIROMENT', W2P_ENV_DEVELOPMENT);
 define('W2P_EXCEPTIONS', true);
 
+// LOCKDOWN
 define('W2P_LOCKDOWN',false);
 define('W2P_LOCKDOWN_ALLOW',false);
 
+// DATABASE
 define('W2P_MYSQL_USER','root');
 define('W2P_MYSQL_PSWD','');
 define('W2P_MYSQL_DB','w2p');
 define('W2P_MYSQL_HOST','localhost');
-
 
 ?>

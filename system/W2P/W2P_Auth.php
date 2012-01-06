@@ -14,7 +14,7 @@
 
 class W2P_Auth extends W2P{
 	private $conn = false;
-	private static $salt = 'dsfg464$YT$&"#F#SAFG$&/H3tyf3$#"FSf#"%FHASG3$&%"$fytd3Y4$"&#/(';
+	private static $salt = W2P_BASE_SALT;
 	private $ua = "";
 	private static $loggedIn = false;
 	private static $admin = false;
@@ -57,27 +57,20 @@ class W2P_Auth extends W2P{
 				
 		// Check that brid is email
 		if(preg_match('/^([_a-z0-9-.])+@([a-z0-9-]+.)+[a-z]{2,4}$/i',$brid) === 1){
-			$q = $this->conn->query("SELECT * FROM tr_users WHERE email = '{$brid}' AND password = '{$pswd}' LIMIT 1");
-			$q = Model::factory("Users")->where_equal("email", $brid)->where_equal("password", $pswd)->find_one();
+			$user = Model::factory("Users")->where_equal("email", $brid)->where_equal("password", $pswd)->find_one();
 			
-			// Check that query didn't fail
-			if($q !== false){
-				// Check that query returned a row
-				if($q->num_rows === 1){
-					$r = $q->fetch_assoc();
-					$hash = hash('sha256',hash('sha256',(time()*rand())*5000));
-					$remote = hash('sha256',hash('sha256',(time()*rand())*5000).$this->salt);
-					setcookie('auth',$hash);
-					setcookie('user',$r['email']);
-					$_SESSION[$hash] = $remote;
-					$remote = hash('sha256',$remote.$this->ua);
-					$this->conn->query("UPDATE tr_users SET loginhash = '{$remote}' WHERE id = {$r['id']}");
-					return true;
-				}else{
-					return false;
-				}
+			// Check that query returned a row
+			if(count($user)){
+				$hash = hash('sha256',hash('sha256',(time()*rand())*5000));
+				$remote = hash('sha256',hash('sha256',(time()*rand())*5000).$user->salt);
+				setcookie('auth',self::encrypt($hash));
+				setcookie('user',self::encrypt($user->email));
+				$_SESSION[$hash] = $remote;
+				$user->hash = hash('sha256',$remote.$this->ua);
+				$user->save();
+				return true;
 			}else{
-				throw new Exception($this->conn->error);
+				return false;
 			}
 		}else{
 			return false;
@@ -97,8 +90,8 @@ class W2P_Auth extends W2P{
 	 */
 	
 	public function logout(){
-		setcookie('auth','');
-		setcookie('user','');
+		setcookie('auth','',1);
+		setcookie('user','',1);
 		unset($_SESSION['auth']);
 		unset($_SESSION['admin']);
 		session_destroy();
@@ -119,22 +112,27 @@ class W2P_Auth extends W2P{
 	
 	public function isLoggedIn(){
 		if(self::$loggedIn===false){
-			if(isset($_COOKIE['auth']) && strlen($remote) === 64){
-				$remote = $_COOKIE['auth'];	
-				$c_email = $this->conn->escape_string(urldecode($_COOKIE['user']));
-			
-				self::$loginhash = $loginhash = hash('sha256',$_SESSION[$remote].$this->ua);
-				$q = $this->conn->query("SELECT *, CONCAT(firstname, ' ', lastname) AS name FROM tr_users WHERE loginhash = '{$loginhash}' AND email = '{$c_email}' LIMIT 1");
+			if(isset($_COOKIE['auth'])){
+				$remote = self::decrypt($_COOKIE['auth']);
+				$c_email = self::decrypt($_COOKIE['user']);
 				
-				self::$user = $q->fetch_assoc();
+				if(isset($remote) && strlen($remote) === 64){
 				
-				if($q !== false){
-					if($q->num_rows === 1){
-						self::$loggedIn = true;
-						return true;
+					self::$loginhash = $loginhash = hash('sha256',$_SESSION[$remote].$this->ua);
+					$q = $this->conn->query("SELECT *, CONCAT(firstname, ' ', lastname) AS name FROM tr_users WHERE loginhash = '{$loginhash}' AND email = '{$c_email}' LIMIT 1");
+					
+					self::$user = $q->fetch_assoc();
+					
+					if($q !== false){
+						if($q->num_rows === 1){
+							self::$loggedIn = true;
+							return true;
+						}
+					}else{
+						throw new Exception("Could not authenticate due to an SQL error");
 					}
 				}else{
-					throw new Exception("Could not authenticate due to an SQL error");
+					return false;
 				}
 			}else{
 				return false;
@@ -158,8 +156,8 @@ class W2P_Auth extends W2P{
 	
 	public function isAdmin($id = false){
 		if(self::$admin===false && !$id){
-			$remote = $_COOKIE['auth'];
-			$c_email = $this->conn->escape_string($_COOKIE['user']);
+			$remote = self::decrypt($_COOKIE['auth']);
+			$c_email = self::decrypt($_COOKIE['user']);
 			
 			if(strlen($remote) === 64){
 				$loginhash = hash('sha256',$_SESSION[$remote].$this->ua);
@@ -308,6 +306,38 @@ class W2P_Auth extends W2P{
 			}
 		}
 	}
+	
+	/**
+	 * 
+	 *
+	 * @author Eirik Eikaas
+	 * @version [REPLACE]
+	 * @since [REPLACE]
+	 * @package [REPLACE]
+	 * @[VISIBILITY]
+	 * @param [TYPE] $[NAME] [DESC]
+	 * @return [TYPE]
+	 */
+	 
+	public static function encrypt($text, $salt = W2P_COOKIE_SALT){ 
+        return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $salt, $text, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)))); 
+    }
+    
+    /**
+     * 
+     *
+     * @author Eirik Eikaas
+     * @version [REPLACE]
+     * @since [REPLACE]
+     * @package [REPLACE]
+     * @[VISIBILITY]
+     * @param [TYPE] $[NAME] [DESC]
+     * @return [TYPE]
+     */
+    
+    public static function decrypt($text, $salt = W2P_COOKIE_SALT){ 
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $salt, base64_decode($text), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))); 
+    }
 	
 	/**
 	 * 

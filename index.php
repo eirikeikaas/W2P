@@ -66,6 +66,7 @@ try{
 	// Start Auth
 	$auth = new W2PA();
 	
+	W2PSB::mark("main","routingstart");
 	// INDEX
 	$app->get('/', function() use($app, $route, $auth){
 		if($auth->hasClearance(1)){
@@ -119,9 +120,11 @@ try{
 			throw new Exception("Something really weird just happened…");
 		}
 	});
+	W2PSB::mark("main","routingstop");
 	
 	// Run routing
 	$route->run();
+	W2PSB::mark("main","routingafterrun");
 	
 	// Stop debug benchmarking
 	W2PSB::stop("main");

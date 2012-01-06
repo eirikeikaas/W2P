@@ -162,7 +162,8 @@ class W2P_System_ErrorNotifier extends W2P_System{
 	 */
 	 
 	public static function formatException(Exception $e){
-		header("HTTP/1.0 500 Server Error");
+		@ob_end_clean();
+		@header("HTTP/1.0 500 Server Error");
 		echo <<<EOT
 			<html>
 				<head>

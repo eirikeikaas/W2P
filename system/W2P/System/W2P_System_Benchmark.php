@@ -46,8 +46,9 @@ class W2P_System_Benchmark extends W2P_System{
 	
 	static function mark($name, $mark){
 		$t = microtime(true);
-		if($mark !== ("stop" || "start") && self::$timers[$name]['stop'] === null && self::$timers[$name]['start'] !== null){
-			self::$timers[$name][$mark] = $t;
+		if($mark !== ("stop" || "start") && !isset(self::$timers[$name]['stop']) && self::$timers[$name]['start'] !== null){
+			if(!isset(self::$timers[$name]['markers'])){ self::$timers[$name]['markers'] = array(); }
+			self::$timers[$name]['markers'][$mark] = $t;
 		}
 	}
 	
@@ -80,9 +81,18 @@ class W2P_System_Benchmark extends W2P_System{
 	 * @return [TYPE]
 	 */
 	
-	static function log($name){
+	static function log($name = ""){
 		$f = fopen(LOG_DIR.'benchmark.log', 'a+');
 		fwrite($f, '['.date("d-m-Y h:i:s").'] '.$name.': '.self::$timers[$name]['result']."\n");
+		if(isset(self::$timers[$name]['markers']) && count(self::$timers[$name]['markers']) > 0){
+			$len = count(self::$timers[$name]['markers']);
+			$keys = array_keys(self::$timers[$name]['markers']);
+			$markers = "";
+			for($i=0;$i<$len;$i++){
+				$markers .= "\t\t\t".$keys[$i].": ".self::$timers[$name]['markers'][$keys[$i]]."\n";
+			}
+			fwrite($f, $markers);
+		}
 		fclose($f);
 	}
 }
